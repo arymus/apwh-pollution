@@ -7,8 +7,8 @@ This is most commonly used for HTTP requests, because the fetch() function retur
 */
 async function getWeatherData() {
   try {
-    const lat = 40.8448; const lon = 73.8648; // Latitude and longitude of the bronx
-    const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+    const lat = 40.8448; const lon = 73.8648; // Latitude and longitude of the bronx\
+    const url = `https://api.waqi.info/feed/geo:${lat};${lon}/?token=${apiKey}`;
     const res = await fetch(url); // Send a GET request to the API
 
     if (!res.ok) throw new Error("HTTP error: " + res.status); // If the HTTP status isn't OK (200), throw an error
@@ -24,17 +24,20 @@ async function getWeatherData() {
 async function displayWeatherData() {
   const weatherData = await getWeatherData();
   const pollutionText = document.getElementById("air-pollution");
-  pollutionText.innerText = `Air Quality in the Bronx: ${weatherData.list[0].main.aqi}`;
+  alert(weatherData.data)
+  pollutionText.innerText = `Air Quality in the Bronx: ${weatherData.data.aqi}`;
   
   const weatherMeasure = document.getElementById("air-pollution-scale");
-  weatherMeasure.value = weatherData.list[0].main.aqi;
+  weatherMeasure.value = weatherData.data.aqi;
   
   const extraData = document.querySelector(".extra-data");
-  const components = weatherData.list[0].components;
+  const components = weatherData.data.iaqi;
   
   for (const key of Object.keys(components)) {
     const pTag = document.createElement("p");
-    pTag.innerText = `${key}: ${components[key]}`;
+    for (const subkey of Object.keys(key)) {
+      pTag.innerText = `${key}: ${subkey}`;
+    }
     extraData.appendChild(pTag);
   }
 }
